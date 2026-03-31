@@ -1,7 +1,17 @@
 import {useLoaderData, type LoaderFunctionArgs} from 'react-router-dom'
 import {PortableText} from '@portabletext/react'
+import {motion} from 'framer-motion'
 import {client, urlFor} from '../lib/sanity'
 import {type PostBySlugQueryResult} from '../lib/sanity-types'
+
+const fadeUp = {
+  hidden: {opacity: 0, y: 20},
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {duration: 0.5, delay: i * 0.08, ease: [0.25, 0.4, 0.25, 1] as const},
+  }),
+}
 
 export async function loader({params}: LoaderFunctionArgs) {
   if (!params.slug) {
@@ -76,18 +86,23 @@ export default function BlogPost() {
   const {post} = useLoaderData<typeof loader>()
 
   return (
-    <article className="py-12 max-w-3xl mx-auto">
-      {/* Header */}
-      <header className="mb-12">
+    <motion.article
+      initial="hidden"
+      animate="visible"
+      className="max-w-3xl mx-auto"
+    >
+      <motion.header variants={fadeUp} custom={0} className="mb-12">
         {post.tags && post.tags.length > 0 && (
-          <div className="flex gap-2 mb-4">
-            {post.tags.map((tag) => (
-              <span
+          <div className="mb-4 flex gap-2">
+            {post.tags.map((tag, i) => (
+              <motion.span
                 key={tag}
+                variants={fadeUp}
+                custom={i + 1}
                 className="px-3 py-1 text-xs rounded-full bg-zinc-800 text-zinc-300"
               >
                 {tag}
-              </span>
+              </motion.span>
             ))}
           </div>
         )}
@@ -104,33 +119,30 @@ export default function BlogPost() {
               })
             : ''}
         </p>
-      </header>
+      </motion.header>
 
-      {/* Featured Image */}
       {post.mainImage && (
-        <div className="mb-12 rounded-2xl overflow-hidden">
+        <motion.div variants={fadeUp} custom={2} className="mb-12 rounded-2xl overflow-hidden">
           <img
             src={urlFor(post.mainImage).width(800).url()}
             alt={post.title}
             className="w-full"
           />
-        </div>
+        </motion.div>
       )}
 
-      {/* Content */}
-      <div className="prose prose-invert prose-lg max-w-none">
+      <motion.div variants={fadeUp} custom={3} className="prose prose-invert prose-lg max-w-none">
         {post.body && <PortableText value={post.body} components={ptComponents} />}
-      </div>
+      </motion.div>
 
-      {/* Back Link */}
-      <div className="mt-16 pt-8 border-t border-zinc-800">
+      <motion.div variants={fadeUp} custom={4} className="mt-16 pt-8 border-t border-zinc-800">
         <a
           href="/blog"
           className="text-blue-400 hover:text-blue-300 transition-colors"
         >
           ← Back to Blog
         </a>
-      </div>
-    </article>
+      </motion.div>
+    </motion.article>
   )
 }
