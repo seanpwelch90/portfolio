@@ -1,0 +1,4 @@
+// This file is required for the studio to work
+import {defineConfig} from 'sanity'
+
+export default defineConfig({})

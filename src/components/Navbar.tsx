@@ -30,6 +30,14 @@ export default function Navbar() {
             About
           </NavLink>
           <NavLink
+            to="/blog"
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? linkActive : ''}`
+            }
+          >
+            Blog
+          </NavLink>
+          <NavLink
             to="/contact"
             className={({ isActive }) =>
               `${linkBase} ${isActive ? linkActive : ''}`
